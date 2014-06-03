@@ -1,3 +1,49 @@
-Installation instruction are available at
+Install git binaries
 
-http://dev.liquidfeedback.org/trac/lf/wiki/lfapi
+    apt-get install git
+
+> 90 MB
+
+Download latest code revision from the repository
+
+    cd /root/install
+    git clone https://github.com/LiquidFeedbackUA/liquid_feedback_api.git
+
+Install node.js. First add new repository with latest binaries. Create `/etc/apt/sources.list.d/nodejs.list` and add there `deb http://ppa.launchpad.net/chris-lea/node.js/ubuntu trusty main`
+
+    apt-key adv --keyserver keyserver.ubuntu.com --recv-keys B9316A7BC7917B12
+    apt-get update
+    apt-get upgrade
+    apt-get install nodejs
+
+Install npm via the remote install script:
+
+    curl https://www.npmjs.org/install.sh | sh
+
+Install the node-postgres package via the node package manager:
+
+	cd /root/install/lfapi
+    npm install pg
+
+Install the nodemailer package via the node package manager:
+
+	cd /root/install/lfapi
+    npm install nodemailer
+
+Move API code to its destination:
+
+    mv lfapi /opt
+    chown www-data:www-data -R /opt/lfapi
+    cd /opt/lfapi
+
+Configure, using *config.js* file:
+
+    nano config.js
+	#change db options
+	exports.connectionString = 'pg://liquid:feedback@localhost/lf';
+	#edit hostname
+	exports.public_url_path = 'http://api.liquid-feedback.local:25520/';
+
+Start server:
+
+    su - www-data -c 'cd /opt/lfapi && node lfapi.js &>log &'
